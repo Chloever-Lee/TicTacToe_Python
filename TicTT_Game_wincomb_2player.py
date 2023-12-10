@@ -20,23 +20,24 @@ class TicTacToeBoard:
         # Ask user whether this is 1 player or 2 player game
         # For 1 player game, user will be Player X and Player O will be simulated by AI based algorithm
         # For 2 players game, both Player X and Player O will require user input for the next move
+        """
         while(True):
             # Keep looping for input until we have a valid input (1 or 2)
-            """try:
+            try:
                 numberOfPlayers = int(input("Enter number of players (1 or 2): "))
 
                 if (numberOfPlayers < 1 or numberOfPlayers > 2):
                     raise ValueError()
             except:
                 print('Error: Invalid input. Enter 1 or 2')
-                """
-            #else:
-            """
+                
+            else:
+            
                 if (numberOfPlayers == 1):
                     self.simulatePlayerO = True
-                    print("Hello Player X. You will be playing against AI-based Player O!")"""
-                #else:
-                    #self.simulatePlayerO = False
+                    print("Hello Player X. You will be playing against AI-based Player O!")
+                else:
+                    self.simulatePlayerO = False
             print("Hello Player X and Player O!")
             break
 
@@ -44,7 +45,7 @@ class TicTacToeBoard:
             self.file.writelines("PlayerO simulated by AI.\n") #to record
         else:
             self.file.writelines("Two player game.\n") #to record
-
+        """
         # determine which player start first
         randomInt = random.randint(0, 1)
 
@@ -115,7 +116,7 @@ class TicTacToeBoard:
             self.file.writelines("It is a tie.\n") #to record
             return True 
         #return True will go into the loop, but will break per if statement
-       
+
     #switchplayers() can switch players for currently playing per X, O values
     def switchPlayer(self):
         #global statement let you this local change can be reflected in global level
@@ -132,6 +133,12 @@ class TicTacToeBoard:
         print("Thanks for Playing.")
         self.file.writelines("Thanks for Playing. Game session over.\n") #to record
         self.file.close()
+
+    def isAIPlayersTurn(self):
+        if self.simulatePlayerO == True and self.currentPlayer == "O":
+            return True
+        else:
+            return False
 
     # Determine if the player has won
     def isWinner(self, board, winner):
@@ -188,8 +195,18 @@ class TicTacToeBoard:
     # Surma, G. (2021, October 13). Tic Tac Toe - Creating Unbeatable AI - Greg Surma - Medium. Medium. https://gsurma.medium.com/tic-tac-toe-creating-unbeatable-ai-with-minimax-algorithm-8af9e52c1e7d
     def minimax(self, board, player):
         # If player won, return Score 1 and Move -1 (No move)
-        if (self.isWinner(board, player)):
-            return (1, -1)
+        # If player lose (the other player won), return Score -1 and Move -1 (No move)        
+        if (self.isWinner(board, "X")):
+            if (player == "X"):
+                return (1, -1)
+            else:
+                return (-1, -1)
+        
+        if (self.isWinner(board, "O")):
+            if (player == "O"):
+                return (1, -1)
+            else:
+                return (-1, -1)
         
         moveIndex = -1
         score = -2
@@ -229,7 +246,7 @@ game = TicTacToeBoard()
 while True:
     game.printBoard() #to display
 
-    if (game.simulatePlayerO == True and game.currentPlayer == "O"):
+    if (game.isAIPlayersTurn()):
         inp = game.simulatePlayerONextMove()
     else:
         #to take inputs: should have which player's turn in user input statement
